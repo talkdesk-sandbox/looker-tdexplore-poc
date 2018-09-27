@@ -32,6 +32,8 @@ view: calls_historical {
     timeframes: [
       raw,
       time,
+      minute,
+      hour,
       date,
       week,
       month,
@@ -40,6 +42,28 @@ view: calls_historical {
     ]
     sql: ${TABLE}.call_finished ;;
   }
+
+  parameter: timeframe_picker {
+    label: "Date Granularity"
+    type: string
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Minute" }
+    default_value: "Hour"
+  }
+
+  dimension: call_finished_dynamic {
+    type: string
+    sql:
+    CASE
+    WHEN {% parameter timeframe_picker %} = 'Month' THEN ${call_finished_month}
+    WHEN {% parameter timeframe_picker %} = 'Day' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
+    WHEN{% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
+    WHEN{% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
+    END ;;
+  }
+
 
   dimension: call_id {
     type: string
@@ -254,13 +278,20 @@ view: calls_historical {
     drill_fields: [id]
   }
 
+  measure: inbound_calls_count {
+    type: count
+    filters: {
+      field: direction
+      value: "in"
+    }
+  }
+
   measure: total_waiting_time {
     type: sum
     sql: ${waiting_time} ;;
     value_format_name: decimal_2
     drill_fields: [detail*, total_waiting_time]
   }
-
 
   measure: average_waiting_time {
     type: average
@@ -278,14 +309,10 @@ view: calls_historical {
 
   measure: average_abandonment_time {
     type: average
-    sql: ${TABLE}.total_duration ;;
+    sql: ${TABLE}.waiting_time ;;
     value_format_name: decimal_2
     filters: {
-      field: direction
-      value: "in"
-    }
-    filters: {
-      field: type
+      field: last_call_state
       value: "abandoned"
     }
     drill_fields: [detail*]
@@ -354,6 +381,8 @@ view: calls_historical {
       value: "true"
     }
   }
+
+
 
 
   set: detail {
