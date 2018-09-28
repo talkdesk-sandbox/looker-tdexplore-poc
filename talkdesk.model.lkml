@@ -20,3 +20,12 @@ explore: calls_historical {
     sql_on: ${call_legs.interaction_id}=${calls_historical.id} ;;
   }
 }
+
+explore: users_account {
+
+  join: calls_historical{
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${users_account.user_id}=${calls_historical.user_id} and ${users_account.account_id}=${calls_historical.account_id};;
+  }
+}

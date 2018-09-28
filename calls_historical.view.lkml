@@ -60,11 +60,23 @@ view: calls_historical {
     sql:
     CASE
     WHEN {% parameter timeframe_picker %} = 'Month' THEN ${call_finished_month}
-    WHEN {% parameter timeframe_picker %} = 'Day' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
+    WHEN {% parameter timeframe_picker %} = 'Day' THEN  TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
     WHEN{% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
     WHEN{% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
     END ;;
   }
+
+#  dimension: call_finished_dynamic {
+#    description: "Use this with Date Granularity filter"
+#    type: date
+#    sql:
+#    CASE
+#    WHEN {% parameter timeframe_picker %} = 'Month' THEN DATE_TRUNC('month', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Day' THEN  DATE_TRUNC('day', ${TABLE}.call_finished)
+#    WHEN{% parameter timeframe_picker %} = 'Hour' THEN DATE_TRUNC('hour', ${TABLE}.call_finished)
+#    WHEN{% parameter timeframe_picker %} = 'Minute' THEN DATE_TRUNC('minute', ${TABLE}.call_finished)
+#    END ;;
+#  }
 
 
   dimension: call_id {
@@ -288,6 +300,14 @@ view: calls_historical {
     }
   }
 
+  measure: outbound_calls_count {
+    type: count
+    filters: {
+      field: direction
+      value: "out"
+    }
+  }
+
   measure: total_waiting_time {
     type: sum
     sql: ${waiting_time} ;;
@@ -337,6 +357,27 @@ view: calls_historical {
   measure: longest_duration {
     type: max
     sql: ${TABLE}.total_duration ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  measure: speed_to_answer {
+    type: sum
+    sql: ${TABLE}.speed_to_answer_time ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  measure: average_speed_to_answer {
+    type: average
+    sql: ${TABLE}.speed_to_answer_time ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  measure: longest_speed_to_answer {
+    type: max
+    sql: ${TABLE}.speed_to_answer_time ;;
     value_format_name: decimal_2
     drill_fields: [detail*]
   }
