@@ -45,6 +45,7 @@ view: calls_historical {
 
   parameter: timeframe_picker {
     label: "Date Granularity"
+    description: "Use this with Call Finished Dynamic dimension"
     type: string
     allowed_value: { value: "Month" }
     allowed_value: { value: "Day" }
@@ -54,6 +55,7 @@ view: calls_historical {
   }
 
   dimension: call_finished_dynamic {
+    description: "Use this with Date Granularity filter"
     type: string
     sql:
     CASE
