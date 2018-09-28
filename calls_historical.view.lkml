@@ -175,7 +175,7 @@ view: calls_historical {
 
   dimension: last_call_state {
     type: string
-    sql: ${TABLE}.last_call_state ;;
+    sql: initcap(cast(${TABLE}.last_call_state as varchar)) ;;
   }
 
   dimension: minutes_billed {
@@ -313,7 +313,7 @@ view: calls_historical {
     value_format_name: decimal_2
     filters: {
       field: last_call_state
-      value: "abandoned"
+      value: "Abandoned"
     }
     drill_fields: [detail*]
   }
@@ -345,6 +345,8 @@ view: calls_historical {
     sql: (100.00 * COALESCE(${calls_with_waiting_time_less_that_service_level},0)) /NULLIF(${inbound_calls_during_business_hours_fm},0) ;;
     value_format: "#.00\%"
     drill_fields: [detail*]
+    html:   <img src="https://chart.googleapis.com/chart?chs=400x250&cht=gom&chma=10,0,0,0&chxt=y&chco=FF4E00,191F43,01C6CC&chf=bg,s,FFFFFF00&chl={{ rendered_value }}&chd=t:{{ value }}">;;
+    # https://discourse.looker.com/t/creating-custom-vis-via-html/3735
   }
 
   measure: inbound_calls_during_business_hours_fm {
@@ -356,7 +358,7 @@ view: calls_historical {
     }
     filters: {
       field: last_call_state
-      value: "finished,missed"
+      value: "Finished,Missed"
     }
     filters: {
       field: in_business_hours
@@ -374,7 +376,7 @@ view: calls_historical {
     }
     filters: {
       field: last_call_state
-      value: "finished,missed"
+      value: "Finished,Missed"
     }
     filters: {
       field: in_business_hours
