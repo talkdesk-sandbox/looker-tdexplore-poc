@@ -22,10 +22,10 @@ view: users_account {
   dimension: user_id {
     type: string
     sql: ${TABLE}.user_id ;;
-    link: {
-      label: "Agent Details"
-      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserID={{ value }}"
-    }
+#    link: {
+#      label: "Agent Details"
+#      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserID={{ value }}"
+#    }
   }
 
   dimension: user_name {
@@ -33,7 +33,7 @@ view: users_account {
     sql: ${TABLE}.user_name ;;
     link: {
       label: "Agent Details by User Name"
-      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserName={{ value }}"
+      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserID={{ user_id._value }}"
     }
   }
 
