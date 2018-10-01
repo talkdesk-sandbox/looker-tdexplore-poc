@@ -31,10 +31,16 @@ view: users_account {
   dimension: user_name {
     type: string
     sql: ${TABLE}.user_name ;;
-    link: {
-      label: "Agent Details by User Name"
-      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}"
-    }
+#    link: {
+#      label: "Agent Details by User Name"
+#      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}"
+#    }
+  }
+
+  dimension: link_to_details {
+    type: string
+    sql:'Details' ;;
+    html: <a href="/dashboards/3?User ID={{ user_id._value }}" target="_new">Details</a> ;;
   }
 
   set: detail {
