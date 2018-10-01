@@ -128,4 +128,14 @@ view: agent_status_historical {
     type: count
     drill_fields: [id, user_name]
   }
+
+  measure: total_status_duration {
+    type: sum
+    sql: ${TABLE}.status_duration ;;
+  }
+
+  measure: average_status_duration {
+    type: average
+    sql: ${TABLE}.status_duration ;;
+  }
 }

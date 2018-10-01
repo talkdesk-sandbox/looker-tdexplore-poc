@@ -33,7 +33,7 @@ view: users_account {
     sql: ${TABLE}.user_name ;;
     link: {
       label: "Agent Details by User Name"
-      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserID={{ user_id._value }}"
+      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}"
     }
   }
 
