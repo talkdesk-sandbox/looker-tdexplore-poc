@@ -1,6 +1,7 @@
 view: calls_historical {
   sql_table_name: public.calls_historical ;;
 
+  # Dimensions
   dimension: id {
     primary_key: yes
     type: string
@@ -287,7 +288,8 @@ view: calls_historical {
     sql: ${TABLE}.waiting_time ;;
   }
 
-  measure: count {
+  # Measures
+  measure: total_calls_count {
     type: count
     drill_fields: [id]
   }
@@ -382,7 +384,7 @@ view: calls_historical {
     drill_fields: [detail*]
   }
 
-#Service Level
+  #Service Level
   measure: service_level {
     type: number
     sql: (100.00 * COALESCE(${calls_with_waiting_time_less_that_service_level},0)) /NULLIF(${inbound_calls_during_business_hours_fm},0) ;;
@@ -427,9 +429,7 @@ view: calls_historical {
     }
   }
 
-
-
-
+  # Details Set
   set: detail {
     fields: [id, call_finished_date, direction, type]
   }
