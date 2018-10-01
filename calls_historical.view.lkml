@@ -288,31 +288,32 @@ view: calls_historical {
     }
   }
 
+  #https://discourse.looker.com/t/readable-times-from-seconds/1587/5
   measure: total_waiting_time {
     type: sum
     sql: ${waiting_time} ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*, total_waiting_time]
   }
 
   measure: average_waiting_time {
     type: average
     sql: ${waiting_time} ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*]
   }
 
   measure: longest_waiting_time {
     type: max
     sql: ${waiting_time} ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*]
   }
 
   measure: average_abandonment_time {
     type: average
     sql: ${TABLE}.waiting_time ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     filters: {
       field: last_call_state
       value: "Abandoned"
@@ -323,21 +324,21 @@ view: calls_historical {
   measure: average_duration {
     type: average
     sql: ${TABLE}.total_duration ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*]
   }
 
   measure: total_duration_measure {
     type: sum
     sql: ${TABLE}.total_duration ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*]
   }
 
   measure: longest_duration {
     type: max
     sql: ${TABLE}.total_duration ;;
-    value_format_name: decimal_2
+    value_format: "h:mm:ss"
     drill_fields: [detail*]
   }
 

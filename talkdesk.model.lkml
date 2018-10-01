@@ -6,7 +6,7 @@ include: "*.view.lkml"
 explore: calls_historical {
   always_filter: {
     filters: {
-      field: calls_historical.call_finished_date
+      field: calls_historical.call_finished_time
       value: "2 days"
     }
   }
