@@ -62,8 +62,8 @@ view: calls_historical {
     CASE
     WHEN {% parameter timeframe_picker %} = 'Month' THEN ${call_finished_month}
     WHEN {% parameter timeframe_picker %} = 'Day' THEN  TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
-    WHEN{% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
-    WHEN{% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
+    WHEN {% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
+    WHEN {% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
     END ;;
   }
 
@@ -74,8 +74,8 @@ view: calls_historical {
 #    CASE
 #    WHEN {% parameter timeframe_picker %} = 'Month' THEN DATE_TRUNC('month', ${TABLE}.call_finished)
 #    WHEN {% parameter timeframe_picker %} = 'Day' THEN  DATE_TRUNC('day', ${TABLE}.call_finished)
-#    WHEN{% parameter timeframe_picker %} = 'Hour' THEN DATE_TRUNC('hour', ${TABLE}.call_finished)
-#    WHEN{% parameter timeframe_picker %} = 'Minute' THEN DATE_TRUNC('minute', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Hour' THEN DATE_TRUNC('hour', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Minute' THEN DATE_TRUNC('minute', ${TABLE}.call_finished)
 #    END ;;
 #  }
 

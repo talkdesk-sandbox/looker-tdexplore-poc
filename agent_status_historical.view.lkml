@@ -1,6 +1,7 @@
 view: agent_status_historical {
   sql_table_name: public.agent_status_historical ;;
 
+  # Dimensions
   dimension: id {
     primary_key: yes
     type: number
@@ -51,6 +52,8 @@ view: agent_status_historical {
     timeframes: [
       raw,
       time,
+      minute,
+      hour,
       date,
       week,
       month,
@@ -60,11 +63,36 @@ view: agent_status_historical {
     sql: ${TABLE}.status_finished ;;
   }
 
+  parameter: timeframe_picker {
+    label: "Date Granularity"
+    description: "Use this with Status Finished Dynamic dimension"
+    type: string
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Hour" }
+    allowed_value: { value: "Minute" }
+    default_value: "Hour"
+  }
+
+  dimension: status_finished_dynamic {
+    description: "Use this with Date Granularity filter"
+    type: string
+    sql:
+    CASE
+    WHEN {% parameter timeframe_picker %} = 'Month' THEN ${status_finished_month}
+    WHEN {% parameter timeframe_picker %} = 'Day' THEN  TO_CHAR(${status_finished_date}, 'YYYY-MM-DD')
+    WHEN {% parameter timeframe_picker %} = 'Hour' THEN ${status_finished_hour}
+    WHEN {% parameter timeframe_picker %} = 'Minute' THEN ${status_finished_minute}
+    END ;;
+  }
+
   dimension_group: status_started {
     type: time
     timeframes: [
       raw,
       time,
+      minute,
+      hour,
       date,
       week,
       month,
@@ -93,6 +121,8 @@ view: agent_status_historical {
     type: string
     sql: ${TABLE}.user_name ;;
   }
+
+  # Mesures
 
   measure: count {
     type: count
