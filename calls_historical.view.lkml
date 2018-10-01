@@ -1,6 +1,7 @@
 view: calls_historical {
   sql_table_name: public.calls_historical ;;
 
+  # Dimensions
   dimension: id {
     primary_key: yes
     type: string
@@ -60,11 +61,23 @@ view: calls_historical {
     sql:
     CASE
     WHEN {% parameter timeframe_picker %} = 'Month' THEN ${call_finished_month}
-    WHEN {% parameter timeframe_picker %} = 'Day' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
-    WHEN{% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
-    WHEN{% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
+    WHEN {% parameter timeframe_picker %} = 'Day' THEN  TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
+    WHEN {% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
+    WHEN {% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
     END ;;
   }
+
+#  dimension: call_finished_dynamic {
+#    description: "Use this with Date Granularity filter"
+#    type: date
+#    sql:
+#    CASE
+#    WHEN {% parameter timeframe_picker %} = 'Month' THEN DATE_TRUNC('month', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Day' THEN  DATE_TRUNC('day', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Hour' THEN DATE_TRUNC('hour', ${TABLE}.call_finished)
+#    WHEN {% parameter timeframe_picker %} = 'Minute' THEN DATE_TRUNC('minute', ${TABLE}.call_finished)
+#    END ;;
+#  }
 
 
   dimension: call_id {
@@ -275,7 +288,8 @@ view: calls_historical {
     sql: ${TABLE}.waiting_time ;;
   }
 
-  measure: count {
+  # Measures
+  measure: total_calls_count {
     type: count
     drill_fields: [id]
   }
@@ -285,6 +299,14 @@ view: calls_historical {
     filters: {
       field: direction
       value: "in"
+    }
+  }
+
+  measure: outbound_calls_count {
+    type: count
+    filters: {
+      field: direction
+      value: "out"
     }
   }
 
@@ -342,7 +364,28 @@ view: calls_historical {
     drill_fields: [detail*]
   }
 
-#Service Level
+  measure: speed_to_answer {
+    type: sum
+    sql: ${TABLE}.speed_to_answer_time ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  measure: average_speed_to_answer {
+    type: average
+    sql: ${TABLE}.speed_to_answer_time ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  measure: longest_speed_to_answer {
+    type: max
+    sql: ${TABLE}.speed_to_answer_time ;;
+    value_format_name: decimal_2
+    drill_fields: [detail*]
+  }
+
+  #Service Level
   measure: service_level {
     type: number
     sql: (100.00 * COALESCE(${calls_with_waiting_time_less_that_service_level},0)) /NULLIF(${inbound_calls_during_business_hours_fm},0) ;;
@@ -387,9 +430,7 @@ view: calls_historical {
     }
   }
 
-
-
-
+  # Details Set
   set: detail {
     fields: [id, call_finished_date, direction, type]
   }
