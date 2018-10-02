@@ -345,11 +345,23 @@ measure: inbound_calls_count {
   }
 }
 
-measure: outbound_calls_count {
+  measure: outbound_calls_count {
+    type: count
+    filters: {
+      field: direction
+      value: "out"
+    }
+  }
+
+measure: outbound_calls_answered_count {
   type: count
   filters: {
     field: direction
     value: "out"
+  }
+  filters: {
+    field: last_call_state
+    value: "Finished,Voicemail"
   }
 }
 
