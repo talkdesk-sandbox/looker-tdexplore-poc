@@ -166,7 +166,12 @@ dimension: customer_phone_number {
 
 dimension: direction {
   type: string
-  sql: ${TABLE}.direction ;;
+  sql: CASE
+        WHEN ${TABLE}.direction = 'in' THEN 'Inbound'
+        WHEN ${TABLE}.direction = 'out' THEN 'Outbound'
+        WHEN ${TABLE}.direction = 'agent' THEN 'Agent-to-Agent'
+      ELSE NULL END
+      ;;
 }
 
 dimension: external_phone_number {
