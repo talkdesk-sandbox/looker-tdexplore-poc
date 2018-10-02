@@ -131,11 +131,20 @@ view: agent_status_historical {
 
   measure: total_status_duration {
     type: sum
-    sql: ${TABLE}.status_duration ;;
+    sql: ${status_duration} / 86400.0 ;;
+    value_format: "[h]:mm:ss"
+    drill_fields: [detail*]
   }
 
   measure: average_status_duration {
     type: average
-    sql: ${TABLE}.status_duration ;;
+    sql: ${status_duration} / 86400.0  ;;
+    value_format: "[h]:mm:ss"
+    drill_fields: [detail*]
+  }
+
+  # Details Set
+  set: detail {
+    fields: [id, user_id, user_name, base_status, status_started_time,status_finished_time]
   }
 }
