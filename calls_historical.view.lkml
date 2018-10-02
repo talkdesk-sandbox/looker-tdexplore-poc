@@ -349,28 +349,28 @@ measure: outbound_calls_count {
 #https://discourse.looker.com/t/readable-times-from-seconds/1587/5
 measure: total_waiting_time {
   type: sum
-  sql: 1.0 *${waiting_time}/24 ;;
+  sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*, total_waiting_time]
 }
 
 measure: average_waiting_time {
   type: average
-  sql: 1.0 *${waiting_time}/24 ;;
+  sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: longest_waiting_time {
   type: max
-  sql: 1.0 *${waiting_time}/24 ;;
+  sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: average_abandonment_time {
   type: average
-  sql: 1.0 *${waiting_time}/24 ;;
+  sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   filters: {
     field: last_call_state
@@ -381,42 +381,42 @@ measure: average_abandonment_time {
 
 measure: average_duration {
   type: average
-  sql:  1.0 *${total_duration}/24 ;;
+  sql: ${total_duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: total_duration_measure {
   type: sum
-  sql:  1.0 *${total_duration}/24 ;;
+  sql: ${total_duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: longest_duration {
   type: max
-  sql:  1.0 *${total_duration}/24 ;;
+  sql: ${total_duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: speed_to_answer {
   type: sum
-  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24 ;;
+  sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: average_speed_to_answer {
   type: average
-  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24  ;;
+  sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: longest_speed_to_answer {
   type: max
-  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24 ;;
+  sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
