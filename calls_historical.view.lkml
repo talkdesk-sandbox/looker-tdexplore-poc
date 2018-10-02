@@ -164,15 +164,21 @@ dimension: customer_phone_number {
   sql: ${TABLE}.customer_phone_number ;;
 }
 
-dimension: direction {
-  type: string
-  sql: CASE
-        WHEN ${TABLE}.direction = 'in' THEN 'Inbound'
-        WHEN ${TABLE}.direction = 'out' THEN 'Outbound'
-        WHEN ${TABLE}.direction = 'agent' THEN 'Agent-to-Agent'
+  dimension: direction {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.direction ;;
+  }
+
+dimension: calls_direction {
+    type: string
+    sql: CASE
+        WHEN ${direction} = 'in' THEN 'Inbound'
+        WHEN ${direction} = 'out' THEN 'Outbound'
+        WHEN ${direction} = 'agent' THEN 'Agent-to-Agent'
       ELSE NULL END
       ;;
-}
+  }
 
 dimension: external_phone_number {
   type: string
