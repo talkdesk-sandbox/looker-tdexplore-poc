@@ -473,8 +473,94 @@ measure: calls_with_waiting_time_less_that_service_level {
   }
 }
 
-# Details Set
-set: detail {
-  fields: [id, call_finished_date, direction, type]
-}
+  ### CSAT Measures ###
+
+  measure: csat_survey_sent_count {
+    group_label: "CSAT"
+    type: sum
+    label: "Number of Surveys Sent"
+    sql: CASE WHEN ${TABLE}.csat_survey_sent IS NULL THEN 0 ELSE 1 END ;;
+  }
+
+  measure: csat_response_received_count {
+    group_label: "CSAT"
+    type: sum
+    label: "Number of Responses Received"
+    sql: CASE WHEN ${TABLE}.csat_score IS NULL THEN 0 ELSE 1 END ;;
+  }
+
+  measure: csat_response_rate {
+    group_label: "CSAT"
+    type: number
+    label: "Response Rate"
+    sql: ${csat_response_received_count}::DECIMAL/NULLIF(${csat_survey_sent_count},0) ;;
+    value_format_name: percent_0
+  }
+
+  measure: csat_score_sum {
+    hidden: yes
+    type: sum
+    sql: (${TABLE}.csat_score)::DECIMAL ;;
+  }
+
+  measure: csat_average {
+    group_label: "CSAT"
+    label: "Average Score"
+    type: number
+    sql: ${csat_score_sum}/NULLIF(${csat_response_received_count},0) ;;
+    value_format_name: decimal_2
+  }
+
+  measure: number_of_mood_prompts {
+    group_label: "Mood"
+    type: sum
+    label: "Number of Prompts"
+    sql: CASE WHEN ${TABLE}.mood_rendered = 'true' THEN 1 ELSE 0 END ;;
+  }
+
+  measure: number_of_mood_submissions {
+    group_label: "Mood"
+    type: sum
+    label: "Number of Submissions"
+    sql: CASE
+          WHEN ${TABLE}.mood IN ('1','2','3','4','5','very_unhappy','unhappy','neutral','happy','very_happy')
+          THEN 1 ELSE 0 END
+        ;;
+  }
+
+  measure: mood_submission_rate {
+    group_label: "Mood"
+    type: number
+    label: "Completion Rate"
+    sql: ${number_of_mood_submissions}::DECIMAL/NULLIF(${number_of_mood_prompts},0) ;;
+    value_format_name: percent_0
+  }
+
+  measure: mood_score_sum {
+    hidden: yes
+    type: sum
+    sql: CASE
+          WHEN ${TABLE}.mood IN ('1','2','3','4','5')
+            THEN ${TABLE}.mood::DECIMAL
+          WHEN ${TABLE}.mood = 'very_happy' THEN 5.0
+          WHEN ${TABLE}.mood = 'happy' THEN 4.0
+          WHEN ${TABLE}.mood = 'neutral' THEN 3.0
+          WHEN ${TABLE}.mood = 'unhappy' THEN 2.0
+          WHEN ${TABLE}.mood = 'very_unhappy' THEN 1.0
+        ELSE NULL END
+       ;;
+  }
+
+  measure: mood_average {
+    group_label: "Mood"
+    label: "Average Score"
+    type: number
+    sql: ${mood_score_sum}/NULLIF(${number_of_mood_submissions},0) ;;
+    value_format_name: decimal_2
+  }
+
+  # Details Set
+  set: detail {
+    fields: [id, call_finished_date, direction, type]
+  }
 }
