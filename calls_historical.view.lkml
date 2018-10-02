@@ -170,7 +170,7 @@ dimension: customer_phone_number {
     sql: ${TABLE}.direction ;;
   }
 
-dimension: calls_direction {
+dimension: call_direction {
     type: string
     sql: CASE
         WHEN ${direction} = 'in' THEN 'Inbound'
