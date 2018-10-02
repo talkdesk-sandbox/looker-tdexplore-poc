@@ -1,3 +1,4 @@
+include: "calls_historical.view"
 view: users_account {
   derived_table: {
     sql: select
@@ -22,26 +23,22 @@ view: users_account {
   dimension: user_id {
     type: string
     sql: ${TABLE}.user_id ;;
-#    link: {
-#      label: "Agent Details"
-#      url: "https://talkdeskoem.eu.looker.com/dashboards/3?UserID={{ value }}"
-#    }
   }
 
   dimension: user_name {
     type: string
     sql: ${TABLE}.user_name ;;
-#    link: {
-#      label: "Agent Details by User Name"
-#      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}"
-#    }
+    link: {
+      label: "Agent Details Dashboard"
+      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}&Date%20Status={{ _filters['calls_historical.call_finished_date'] }}&Date%20Calls={{ _filters['calls_historical.call_finished_date'] }}"
+    }
   }
 
-  dimension: link_to_details {
-    type: string
-    sql:'Details' ;;
-    html: <a href="/dashboards/3?User ID={{ user_id._value }}" target="_new">Details</a> ;;
-  }
+#   dimension: link_to_details {
+#     type: string
+#     sql:'Details' ;;
+#     html: <a href="/dashboards/3?User ID={{ user_id._value }}" target="_new">Details</a> ;;
+#   }
 
   set: detail {
     fields: [account_id, user_id, user_name]
