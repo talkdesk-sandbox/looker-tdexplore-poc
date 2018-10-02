@@ -402,22 +402,22 @@ measure: longest_duration {
 
 measure: speed_to_answer {
   type: sum
-  sql: ${TABLE}.speed_to_answer_time ;;
-  value_format_name: decimal_2
+  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24 ;;
+  value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: average_speed_to_answer {
   type: average
-  sql: ${TABLE}.speed_to_answer_time ;;
-  value_format_name: decimal_2
+  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24  ;;
+  value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: longest_speed_to_answer {
   type: max
-  sql: ${TABLE}.speed_to_answer_time ;;
-  value_format_name: decimal_2
+  sql: 1.0 * ${TABLE}.speed_to_answer_time / 24 ;;
+  value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
