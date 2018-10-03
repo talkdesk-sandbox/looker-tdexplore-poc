@@ -26,6 +26,11 @@ explore: calls_historical {
 
 explore: users_account {
 
+  access_filter: {
+    field: account_id
+    user_attribute: account_id_manual
+  }
+
   join: calls_historical{
     type: left_outer
     relationship: one_to_many
