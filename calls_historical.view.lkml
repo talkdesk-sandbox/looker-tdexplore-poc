@@ -75,13 +75,14 @@ view: calls_historical {
     WHEN {% parameter timeframe_picker %} = 'Month' THEN ${call_finished_month}
     WHEN {% parameter timeframe_picker %} = 'Day' THEN  TO_CHAR(${call_finished_date}, 'YYYY-MM-DD')
     WHEN {% parameter timeframe_picker %} = 'Hour' THEN ${call_finished_hour}
-    /*WHEN {% parameter timeframe_picker %} = 'Hour' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD') || ' ' || ${custom_hour_of_day}*/
     WHEN {% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
     END ;;
   }
 
+#add this to call_finished_dynamic_v2
+#/*WHEN {% parameter timeframe_picker %} = 'Hour' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD') || ' ' || ${custom_hour_of_day}*/
   dimension: custom_hour_of_day {
-#       hidden: yes
+      hidden: yes
   description: "Need to do this so it orders correctly when the dynamic timeframe is used in a report."
   sql: CASE
           WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 0 then '00'
@@ -441,7 +442,8 @@ measure: longest_speed_to_answer {
 }
 
 #Service Level
-measure: service_level {
+measure: queue_service_level {
+  description: "Service Level calls belong to the queue, not a specific agent. Do not use with user_id dimension."
   type: number
   sql: (100.00 * COALESCE(${calls_with_waiting_time_less_that_service_level},0)) /NULLIF(${inbound_calls_during_business_hours_fm},0) ;;
   value_format: "#.00\%"

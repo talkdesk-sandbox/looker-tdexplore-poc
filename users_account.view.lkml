@@ -21,6 +21,7 @@ view: users_account {
   }
 
   dimension: user_id {
+    primary_key: yes
     type: string
     sql: ${TABLE}.user_id ;;
   }
