@@ -9,7 +9,7 @@ view: queue_metrics {
           SUM(CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') THEN 1 ELSE 0 END) AS in_business_hours_fm
         FROM public.calls_historical
         WHERE
-          direction = 'in'
+          direction = 'in' AND account_id = '{{ _user_attributes['account_id_manual'] }}'
         GROUP BY account_id, talkdesk_phone_number, ring_groups, call_finished
         ;;
   }
