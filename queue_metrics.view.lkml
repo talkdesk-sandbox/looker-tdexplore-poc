@@ -5,12 +5,11 @@ view: queue_metrics {
           talkdesk_phone_number,
           ring_groups,
           call_finished,
-          SUM(CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') AND waiting_time <= service_level_threshold THEN 1 ELSE 0 END) AS within_service_level,
-          SUM(CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') THEN 1 ELSE 0 END) AS in_business_hours_fm
+          CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') AND waiting_time <= service_level_threshold THEN 1 ELSE 0 END AS within_service_level,
+          CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') THEN 1 ELSE 0 END AS in_business_hours_fm
         FROM public.calls_historical
         WHERE
           direction = 'in' AND account_id = '{{ _user_attributes['account_id_manual'] }}'
-        GROUP BY account_id, talkdesk_phone_number, ring_groups, call_finished
         ;;
   }
 
