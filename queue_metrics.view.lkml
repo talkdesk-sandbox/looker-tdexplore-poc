@@ -3,14 +3,14 @@ view: queue_metrics {
     sql: SELECT
           account_id,
           talkdesk_phone_number,
-          ring_group,
+          ring_groups,
           call_finished,
           CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') AND waiting_time <= service_level_threshold THEN 1 ELSE 0 END AS within_service_level,
           CASE WHEN in_business_hours AND last_call_state IN ('finished','missed') THEN 1 ELSE 0 END AS in_business_hours_fm
         FROM public.calls_historical
         WHERE
           direction = 'in'
-        GROUP BY account_id, talkdesk_phone_number, ring_group, call_finished
+        GROUP BY account_id, talkdesk_phone_number, ring_groups, call_finished
         ;;
   }
 
@@ -25,9 +25,9 @@ view: queue_metrics {
     sql: ${TABLE}.talkdesk_phone_number ;;
   }
 
-  dimension: ring_group {
+  dimension: ring_groups {
     type: string
-    sql: ${TABLE}.ring_group ;;
+    sql: ${TABLE}.ring_groups ;;
   }
 
   dimension_group: call_finished {
