@@ -44,3 +44,10 @@ explore: agent_status_historical {
     user_attribute: account_id_manual
   }
 }
+
+explore: queue_metrics {
+  access_filter: {
+    field: account_id
+    user_attribute: account_id_manual
+  }
+}
