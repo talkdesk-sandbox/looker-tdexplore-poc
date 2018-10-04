@@ -529,7 +529,7 @@ measure: calls_with_waiting_time_less_that_service_level {
     group_label: "Mood"
     type: sum
     label: "Number of Prompts"
-    sql: CASE WHEN ${TABLE}.mood_rendered = 'true' THEN 1 ELSE 0 END ;;
+    sql: CASE WHEN ${mood_rendered} THEN 1 ELSE 0 END ;;
   }
 
   measure: number_of_mood_submissions {
@@ -537,7 +537,7 @@ measure: calls_with_waiting_time_less_that_service_level {
     type: sum
     label: "Number of Submissions"
     sql: CASE
-          WHEN ${TABLE}.mood IN ('1','2','3','4','5','very_unhappy','unhappy','neutral','happy','very_happy')
+          WHEN ${mood} IN ('unhappy','neutral','happy')
           THEN 1 ELSE 0 END
         ;;
   }
@@ -554,13 +554,9 @@ measure: calls_with_waiting_time_less_that_service_level {
     hidden: yes
     type: sum
     sql: CASE
-          WHEN ${TABLE}.mood IN ('1','2','3','4','5')
-            THEN ${TABLE}.mood::DECIMAL
-          WHEN ${TABLE}.mood = 'very_happy' THEN 5.0
-          WHEN ${TABLE}.mood = 'happy' THEN 4.0
+          WHEN ${TABLE}.mood = 'happy' THEN 5.0
           WHEN ${TABLE}.mood = 'neutral' THEN 3.0
-          WHEN ${TABLE}.mood = 'unhappy' THEN 2.0
-          WHEN ${TABLE}.mood = 'very_unhappy' THEN 1.0
+          WHEN ${TABLE}.mood = 'unhappy' THEN 1.0
         ELSE NULL END
        ;;
   }
