@@ -3,11 +3,13 @@ connection: "reporting02"
 include: "*.view.lkml"
 
 
-explore: calls_historical {
+explore: calls_historical__account {
+  label: "Team Performance"
+  view_label: "Calls"
 
   always_filter: {
     filters: {
-      field: calls_historical.call_finished_time
+      field: calls_historical__account.call_finished_time
       value: "2 days"
     }
   }
@@ -20,21 +22,30 @@ explore: calls_historical {
   join: call_legs {
     type: left_outer
     relationship: one_to_many
-    sql_on: ${call_legs.interaction_id}=${calls_historical.id} ;;
+    sql_on: ${call_legs.interaction_id}=${calls_historical__account.id} ;;
   }
 }
 
 explore: users_account {
+  label: "Agent Performance"
+  view_label: "Users"
 
+  always_filter: {
+    filters: {
+      field: calls_historical__agent.call_finished_time
+      value: "2 days"
+    }
+  }
   access_filter: {
     field: account_id
     user_attribute: account_id_manual
   }
 
-  join: calls_historical{
+  join: calls_historical__agent {
+    view_label: "Calls"
     type: left_outer
     relationship: one_to_many
-    sql_on: ${users_account.user_id}=${calls_historical.user_id} and ${users_account.account_id}=${calls_historical.account_id};;
+    sql_on: ${users_account.user_id}=${calls_historical__agent.user_id} and ${users_account.account_id}=${calls_historical__agent.account_id};;
   }
 }
 

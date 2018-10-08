@@ -1,4 +1,4 @@
-include: "calls_historical.view"
+include: "calls_historical__account.view"
 view: users_account {
   derived_table: {
     sql: select

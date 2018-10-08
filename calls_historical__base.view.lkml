@@ -1,4 +1,4 @@
-view: calls_historical {
+view: calls_historical__base {
   sql_table_name: public.calls_historical ;;
 
   # Dimensions
@@ -24,6 +24,7 @@ view: calls_historical {
   }
 
   dimension: call_disposition_code {
+#     hidden: yes
     type: string
     sql: ${TABLE}.call_disposition_code ;;
   }
@@ -55,7 +56,7 @@ view: calls_historical {
     default_value: "Hour"
   }
 
-  dimension: call_finished_dynamic_v1 {
+  dimension: call_finished_dynamic {
     description: "Use this with Date Granularity filter"
     type: date_time
     sql:
@@ -69,6 +70,7 @@ view: calls_historical {
 
   dimension: call_finished_dynamic_v2 {
     description: "Use this with Date Granularity filter"
+    hidden: yes
     type: string
     sql:
     CASE
@@ -78,40 +80,6 @@ view: calls_historical {
     WHEN {% parameter timeframe_picker %} = 'Minute' THEN ${call_finished_minute}
     END ;;
   }
-
-#add this to call_finished_dynamic_v2
-#/*WHEN {% parameter timeframe_picker %} = 'Hour' THEN TO_CHAR(${call_finished_date}, 'YYYY-MM-DD') || ' ' || ${custom_hour_of_day}*/
-  dimension: custom_hour_of_day {
-      hidden: yes
-  description: "Need to do this so it orders correctly when the dynamic timeframe is used in a report."
-  sql: CASE
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 0 then '00'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 1 then '01'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 2 then '02'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 3 then '03'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 4 then '04'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 5 then '05'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 6 then '06'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 7 then '07'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 8 then '08'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 9 then '09'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 10 then '10'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 11 then '11'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 12 then '12'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 13 then '13'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 14 then '14'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 15 then '15'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 16 then '16'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 17 then '17'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 18 then '18'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 19 then '19'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 20 then '20'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 21 then '21'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 22 then '22'
-          WHEN EXTRACT(HOUR FROM ${call_finished_raw} ) = 23 then '23'
-        END
-        ;;
-}
 
 dimension: call_id {
   type: string
@@ -138,30 +106,33 @@ dimension: callback_from_queue {
 }
 
 dimension: contact_id {
+  hidden: yes
   type: string
   sql: ${TABLE}.contact_id ;;
 }
 
 dimension: csat_score {
+  hidden: yes
   type: number
   sql: ${TABLE}.csat_score ;;
 }
 
-dimension_group: csat_survey_sent {
-  type: time
-  timeframes: [
-    raw,
-    time,
-    date,
-    week,
-    month,
-    quarter,
-    year
-  ]
-  sql: ${TABLE}.csat_survey_sent ;;
-}
+# dimension_group: csat_survey_sent {
+#   type: time
+#   timeframes: [
+#     raw,
+#     time,
+#     date,
+#     week,
+#     month,
+#     quarter,
+#     year
+#   ]
+#   sql: ${TABLE}.csat_survey_sent ;;
+# }
 
 dimension: customer_phone_number {
+  group_label: "Phone Numbers"
   type: string
   sql: ${TABLE}.customer_phone_number ;;
 }
@@ -183,6 +154,7 @@ dimension: call_direction {
   }
 
 dimension: external_phone_number {
+  group_label: "Phone Numbers"
   type: string
   sql: ${TABLE}.external_phone_number ;;
 }
@@ -243,11 +215,13 @@ dimension: minutes_billed {
 }
 
 dimension: mood {
+  group_label: "Mood"
   type: string
   sql: ${TABLE}.mood ;;
 }
 
 dimension: mood_rendered {
+  group_label: "Mood"
   type: yesno
   sql: ${TABLE}.mood_rendered ;;
 }
@@ -257,12 +231,8 @@ dimension: offered_teams {
   sql: ${TABLE}.offered_teams ;;
 }
 
-dimension: previous_user_id {
-  type: string
-  sql: ${TABLE}.previous_user_id ;;
-}
-
 dimension: recording_url {
+  hidden: yes
   type: string
   sql: ${TABLE}.recording_url ;;
 }
@@ -270,11 +240,6 @@ dimension: recording_url {
 dimension: ring_groups {
   type: string
   sql: ${TABLE}.ring_groups ;;
-}
-
-dimension: service_level_threshold {
-  type: number
-  sql: ${TABLE}.service_level_threshold ;;
 }
 
 dimension: speed_to_answer_time {
@@ -288,6 +253,7 @@ dimension: talk_time {
 }
 
 dimension: talkdesk_phone_number {
+  group_label: "Phone Numbers"
   type: string
   sql: ${TABLE}.talkdesk_phone_number ;;
 }
@@ -297,7 +263,7 @@ dimension: team_id {
   sql: ${TABLE}.team_id ;;
 }
 
-dimension: total_duration {
+dimension: duration {
   type: number
   sql: ${TABLE}.total_duration ;;
 }
@@ -310,21 +276,6 @@ dimension: transfer_type {
 dimension: type {
   type: string
   sql: ${TABLE}.type ;;
-}
-
-dimension: user_call_quality_rating {
-  type: number
-  sql: ${TABLE}.user_call_quality_rating ;;
-}
-
-dimension: user_id {
-  type: string
-  sql: ${TABLE}.user_id ;;
-}
-
-dimension: user_notes {
-  type: string
-  sql: ${TABLE}.user_notes ;;
 }
 
 dimension: waiting_time {
@@ -368,6 +319,7 @@ measure: outbound_calls_answered_count {
 
 #https://discourse.looker.com/t/readable-times-from-seconds/1587/5
 measure: total_waiting_time {
+  group_label: "Waiting Time"
   type: sum
   sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
@@ -375,6 +327,7 @@ measure: total_waiting_time {
 }
 
 measure: average_waiting_time {
+  group_label: "Waiting Time"
   type: average
   sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
@@ -382,6 +335,7 @@ measure: average_waiting_time {
 }
 
 measure: longest_waiting_time {
+  group_label: "Waiting Time"
   type: max
   sql: ${waiting_time} / 86400.0 ;;
   value_format: "[h]:mm:ss"
@@ -400,27 +354,31 @@ measure: average_abandonment_time {
 }
 
 measure: average_duration {
+  group_label: "Duration"
   type: average
-  sql: ${total_duration} / 86400.0 ;;
+  sql: ${duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
-measure: total_duration_measure {
+measure: total_duration {
+  group_label: "Duration"
   type: sum
-  sql: ${total_duration} / 86400.0 ;;
+  sql: ${duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: longest_duration {
+  group_label: "Duration"
   type: max
-  sql: ${total_duration} / 86400.0 ;;
+  sql: ${duration} / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
 measure: speed_to_answer {
+  group_label: "Speed to Answer"
   type: sum
   sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
@@ -428,6 +386,7 @@ measure: speed_to_answer {
 }
 
 measure: average_speed_to_answer {
+  group_label: "Speed to Answer"
   type: average
   sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
@@ -435,22 +394,13 @@ measure: average_speed_to_answer {
 }
 
 measure: longest_speed_to_answer {
+  group_label: "Speed to Answer"
   type: max
   sql: ${TABLE}.speed_to_answer_time / 86400.0 ;;
   value_format: "[h]:mm:ss"
   drill_fields: [detail*]
 }
 
-#Service Level
-measure: queue_service_level {
-  description: "Service Level calls belong to the queue, not a specific agent. Do not use with user_id dimension."
-  type: number
-  sql: (100.00 * COALESCE(${calls_with_waiting_time_less_that_service_level},0)) /NULLIF(${inbound_calls_during_business_hours_fm},0) ;;
-  value_format: "#.00\%"
-  drill_fields: [detail*]
-  html:   <img src="https://chart.googleapis.com/chart?chs=400x250&cht=gom&chma=10,0,0,0&chxt=y&chco=FF4E00,191F43,01C6CC&chf=bg,s,FFFFFF00&chl={{ rendered_value }}&chd=t:{{ value }}">;;
-  # https://discourse.looker.com/t/creating-custom-vis-via-html/3735
-}
 
 measure: inbound_calls_during_business_hours_fm {
   hidden: yes
@@ -469,23 +419,6 @@ measure: inbound_calls_during_business_hours_fm {
   }
 }
 
-measure: calls_with_waiting_time_less_that_service_level {
-  hidden: yes
-  type: sum
-  sql: CASE WHEN ${waiting_time} <= ${service_level_threshold} THEN 1 ELSE NULL END ;;
-  filters: {
-    field: direction
-    value: "in"
-  }
-  filters: {
-    field: last_call_state
-    value: "Finished,Missed"
-  }
-  filters: {
-    field: in_business_hours
-    value: "true"
-  }
-}
 
   ### CSAT Measures ###
 
