@@ -1,5 +1,16 @@
 view: calls_historical__base {
-  sql_table_name: public.calls_historical ;;
+  derived_table: {
+    sql: SELECT *
+         FROM public.calls_historical
+         WHERE account_id = '{{ _user_attributes['account_id_manual'] }}'
+            AND {% condition date_filter_calls %} call_finished {% endcondition %}
+        ;;
+  }
+
+  # Filter to sub-query on calls
+  filter: date_filter_calls {
+    type: date_time
+  }
 
   # Dimensions
   dimension: id {

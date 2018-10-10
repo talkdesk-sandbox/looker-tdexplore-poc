@@ -31,7 +31,7 @@ view: users_account {
     sql: ${TABLE}.user_name ;;
     link: {
       label: "Agent Details Dashboard"
-      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}&Date%20Status={{ _filters['calls_historical__agent.call_finished_time'] }}&Date%20Calls={{ _filters['calls_historical__agent.call_finished_time'] }}"
+      url: "https://talkdeskoem.eu.looker.com/dashboards/3?User ID={{ user_id._value }}&Date%20Status={{ _filters['calls_historical__agent.date_filter_calls'] }}&Date%20Calls={{ _filters['calls_historical__agent.date_filter_calls'] }}"
     }
   }
 
