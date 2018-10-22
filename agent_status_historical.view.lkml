@@ -28,12 +28,12 @@ view: agent_status_historical {
           FROM public.agent_status_historical
           WHERE account_id = '{{ _user_attributes['account_id_manual'] }}'
             AND {% condition user_id_parameter %} user_id {% endcondition %}
-            AND status_started <= CASE WHEN {% date_end date_filter %} IS NULL THEN NOW() ELSE {% date_end date_filter %}::timestamp END
-            AND status_finished >= CASE WHEN {% date_start date_filter %} IS NULL THEN (NOW() - INTERVAL ' 732 day')::timestamp ELSE {% date_start date_filter %}::timestamp END
+            AND status_started <= CASE WHEN {% date_end date_filter_status %} IS NULL THEN NOW() ELSE {% date_end date_filter_status %}::timestamp END
+            AND status_finished >= CASE WHEN {% date_start date_filter_status %} IS NULL THEN (NOW() - INTERVAL ' 732 day')::timestamp ELSE {% date_start date_filter_status %}::timestamp END
         ) AS agent
         INNER JOIN (
           -- For 2 year of data
-          SELECT generate_series(CASE WHEN {% date_start date_filter %} IS NULL THEN (NOW() - INTERVAL ' 732 day')::timestamp ELSE {% date_start date_filter %}::timestamp END,CASE WHEN {% date_end date_filter %} IS NULL THEN NOW()::timestamp ELSE {% date_end date_filter %}::timestamp END, '1 minute')::timestamp AS date_time
+          SELECT generate_series(CASE WHEN {% date_start date_filter_status %} IS NULL THEN (NOW() - INTERVAL ' 732 day')::timestamp ELSE {% date_start date_filter_status %}::timestamp END,CASE WHEN {% date_end date_filter_status %} IS NULL THEN NOW()::timestamp ELSE {% date_end date_filter_status %}::timestamp END, '1 minute')::timestamp AS date_time
         ) AS time_series ON time_series.date_time BETWEEN agent.status_started AND agent.status_finished
        ;;
   }
@@ -158,7 +158,7 @@ view: agent_status_historical {
     type: string
   }
 
-  filter: date_filter {
+  filter: date_filter_status {
     type: date
   }
 

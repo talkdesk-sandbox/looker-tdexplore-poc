@@ -9,7 +9,7 @@ explore: calls_historical__account {
 
   always_filter: {
     filters: {
-      field: calls_historical__account.call_finished_time
+      field: calls_historical__account.date_filter_calls
       value: "2 days"
     }
   }
@@ -32,7 +32,7 @@ explore: users_account {
 
   always_filter: {
     filters: {
-      field: calls_historical__agent.call_finished_time
+      field: calls_historical__agent.date_filter_calls
       value: "2 days"
     }
   }
@@ -45,18 +45,11 @@ explore: users_account {
     view_label: "Calls"
     type: left_outer
     relationship: one_to_many
-    sql_on: ${users_account.user_id}=${calls_historical__agent.user_id} and ${users_account.account_id}=${calls_historical__agent.account_id};;
+    sql_on: ${users_account.user_id}=${calls_historical__agent.user_id};;
   }
 }
 
 explore: agent_status_historical {
-  access_filter: {
-    field: account_id
-    user_attribute: account_id_manual
-  }
-}
-
-explore: queue_metrics {
   access_filter: {
     field: account_id
     user_attribute: account_id_manual
