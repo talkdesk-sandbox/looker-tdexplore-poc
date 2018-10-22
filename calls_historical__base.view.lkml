@@ -303,7 +303,7 @@ measure: total_calls_count {
   html:
   {% if value > 5 %}
   <div align="left"><p style="font-family: Helvetica, Ariel; color: #10a22d; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
-  {% elsif value > 3 %}
+  {% elsif value > 2 %}
   <div align="left"><p style="font-family: Helvetica, Ariel; color: #ddb404; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
   {% else %}
   <div align="left"><p style="font-family: Helvetica, Ariel; color: #e2423d; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
