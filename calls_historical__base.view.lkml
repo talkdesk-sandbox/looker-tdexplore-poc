@@ -240,6 +240,7 @@ dimension: recording_url {
 dimension: ring_groups {
   type: string
   sql: ${TABLE}.ring_groups ;;
+  html: <div align="left"><p style="font-family: Helvetica, Ariel; color: black; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div> ;;
 }
 
 dimension: speed_to_answer_time {
@@ -285,27 +286,52 @@ dimension: waiting_time {
 
 # Measures
 measure: total_calls_count {
+  group_label: "Call Counts"
   type: count
   drill_fields: [id]
+  html:
+  {% if value > 5 %}
+  <div align="left"><p style="font-family: Helvetica, Ariel; color: #10a22d; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
+  {% elsif value > 3 %}
+  <div align="left"><p style="font-family: Helvetica, Ariel; color: #ddb404; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
+  {% else %}
+  <div align="left"><p style="font-family: Helvetica, Ariel; color: #e2423d; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
+  {% endif %}
+  ;;
 }
 
 measure: inbound_calls_count {
+  group_label: "Call Counts"
   type: count
   filters: {
     field: direction
     value: "in"
   }
+  html: <div align="left"><p style="font-family: Helvetica, Ariel; color: #727273; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div> ;;
 }
 
+#   <head>
+#     <style type="text/css">
+#       p {
+#         font-family: "Trebuchet MS", Arial, sans-serif;
+#         color: black;
+#         font-size: 1.5em;
+#         background-color: #FFFFFF }
+#     </style>
+#   </head>
+
   measure: outbound_calls_count {
+    group_label: "Call Counts"
     type: count
     filters: {
       field: direction
       value: "out"
     }
+    html: <div align="left"><p style="font-family: Helvetica, Ariel; color: #727273; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div> ;;
   }
 
 measure: outbound_calls_answered_count {
+  group_label: "Call Counts"
   type: count
   filters: {
     field: direction
@@ -403,6 +429,7 @@ measure: longest_speed_to_answer {
 
 
 measure: inbound_calls_during_business_hours_fm {
+  group_label: "Call Counts"
   hidden: yes
   type: count
   filters: {
