@@ -300,6 +300,12 @@ measure: total_calls_count {
   group_label: "Call Counts"
   type: count
   drill_fields: [id]
+}
+
+measure: total_calls_count_html {
+  group_label: "Call Counts"
+  type: count
+  drill_fields: [id]
   html:
   {% if value > 5 %}
   <div align="left"><p style="font-family: Helvetica, Ariel; color: #10a22d; font-size: 1.2em; background-color:#FFFFFF;margin: auto; padding:.2em 0em;">{{ value }}</p></div>
